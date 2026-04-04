@@ -37,7 +37,7 @@ type UserPayload = {
 const bootstrap = async (): Promise<void> => {
   await initTracing();
 
-  const app = Fastify({ logger });
+  const app = Fastify({ loggerInstance: logger });
   registerMetrics(app);
 
   await app.register(jwt, {

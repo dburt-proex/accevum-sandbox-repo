@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: accevum-api
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:api
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: accevum-db
+          property: connectionString
+      - key: JWT_SECRET
+        sync: false
+      - key: NODE_ENV
+        value: production
+
+  - type: worker
+    name: accevum-worker
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:worker
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: accevum-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+
+databases:
+  - name: accevum-db
+    plan: free

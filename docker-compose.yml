@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: accevum-postgres
+    environment:
+      POSTGRES_DB: accevum
+      POSTGRES_USER: accevum
+      POSTGRES_PASSWORD: accevum
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: accevum-redis
+    ports:
+      - "6379:6379"
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    container_name: accevum-api
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      DATABASE_URL: postgres://accevum:accevum@postgres:5432/accevum
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: change-me
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318/v1/traces
+    ports:
+      - "3000:3000"
+    command: sh -c "npm run db:migrate && npm run build && npm run start"
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/worker.Dockerfile
+    container_name: accevum-worker
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://accevum:accevum@postgres:5432/accevum
+      REDIS_URL: redis://redis:6379
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318/v1/traces
+    command: sh -c "npm run db:migrate && npm run build && npm run start:worker"
+
+volumes:
+  postgres_data:

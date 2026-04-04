@@ -1,0 +1,20 @@
+{
+  "name": "@accevum/db",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --pretty --noEmit -p tsconfig.json",
+    "db:migrate": "node dist/migrate.js"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.39.1",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0"
+  }
+}

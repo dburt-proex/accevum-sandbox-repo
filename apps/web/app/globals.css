@@ -1,0 +1,89 @@
+:root {
+  --bg: #f8f9f2;
+  --panel: #ffffff;
+  --ink: #11212d;
+  --accent: #007a6e;
+  --accent-2: #ff7a59;
+  --muted: #5f6b73;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top right, #fef3d6, var(--bg) 52%);
+}
+
+main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 32px 16px 80px;
+}
+
+h1 {
+  font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+  margin: 0;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid #d9dfd8;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 8px 22px rgba(16, 30, 28, 0.07);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 740px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+input,
+button {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #c9d3cb;
+  font: inherit;
+}
+
+button {
+  border: 0;
+  background: linear-gradient(115deg, var(--accent), var(--accent-2));
+  color: #fff;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+li {
+  border: 1px solid #dce3df;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  background: #e7faf7;
+  color: #0f6a60;
+}

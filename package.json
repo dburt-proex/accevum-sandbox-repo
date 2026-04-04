@@ -4,6 +4,7 @@
   "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "build": "npm run -w apps/api build && npm run -w apps/worker build && npm run -w apps/web build",
+    "typecheck": "npm run -w apps/api typecheck && npm run -w apps/worker typecheck && npm run -w apps/web typecheck && npm run -w packages/db typecheck",
     "start:api": "node apps/api/dist/server.js",
     "start:worker": "node apps/worker/dist/index.js",
     "dev": "concurrently \"npm run -w apps/api dev\" \"npm run -w apps/worker dev\""

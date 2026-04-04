@@ -8,7 +8,7 @@
     "dev": "npm run build -w @accevum/db && ts-node src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "npm run build -w @accevum/db && node dist/index.js",
-    "typecheck": "tsc --pretty --noEmit -p tsconfig.json"
+    "typecheck": "npm run build -w @accevum/db && tsc --pretty --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@accevum/db": "1.0.0",

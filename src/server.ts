@@ -1,27 +1,41 @@
+import { initTracing } from "./lib/tracing";
 import Fastify from "fastify";
 import { logger } from "./lib/logger";
-import { registerMetrics, metricsHandler } from "./lib/metrics";
+import {
+  registerMetrics,
+  metricsHandler,
+  metricsContentType,
+} from "./lib/metrics";
 
-const app = Fastify({ logger });
+const bootstrap = async (): Promise<void> => {
+  // 🔭 Initialize tracing FIRST (before anything else)
+  await initTracing();
 
-registerMetrics(app);
+  const app = Fastify({ logger });
 
-app.get("/health", async () => ({ status: "ok" }));
-app.get("/readiness", async () => ({ ready: true }));
-app.get("/metrics", metricsHandler);
+  registerMetrics(app);
 
-app.get("/v1/info", async () => ({
-  service: "accevum",
-  version: "1.0.0"
-}));
+  app.get("/health", async () => ({ status: "ok" }));
 
-const start = async () => {
+  app.get("/readiness", async () => ({ ready: true }));
+
+  app.get("/metrics", async (_request, reply) => {
+    reply.header("Content-Type", metricsContentType);
+    return metricsHandler();
+  });
+
+  app.get("/v1/info", async () => ({
+    service: "accevum",
+    version: "1.0.0",
+  }));
+
   try {
-    await app.listen( { port: 3000, host: "0.0.0.0" });
-  } catch (err) {
-    app.log.error(err);
+    await app.listen({ port: 3000, host: "0.0.0.0" });
+    app.log.info("server started");
+  } catch (error) {
+    app.log.error(error);
     process.exit(1);
   }
 };
 
-start();
+void bootstrap();

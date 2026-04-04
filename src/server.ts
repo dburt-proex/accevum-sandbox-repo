@@ -8,7 +8,7 @@ import {
 } from "./lib/metrics";
 
 const bootstrap = async (): Promise<void> => {
-  // 🔭 Initialize tracing FIRST (before anything else)
+  // Initialize tracing before app startup so traces are captured from the beginning.
   await initTracing();
 
   const app = Fastify({ logger });

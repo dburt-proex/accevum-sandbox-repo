@@ -1,0 +1,41 @@
+name: Monitor Failure Alerts
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Monitor Checks (Fixed)"]
+    types: [completed]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+jobs:
+  send-failure-alerts:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build DB package
+        run: npm run -w packages/db build
+
+      - name: Send failure alerts
+        run: node scripts/send-failure-alerts.cjs
+        env:
+          DATABASE_URL: ${{ secrets.RENDER_DATABASE_URL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERT_FROM_EMAIL: ${{ secrets.ALERT_FROM_EMAIL }}
+          ALERT_TO_EMAIL: ${{ secrets.ALERT_TO_EMAIL }}
